@@ -440,8 +440,9 @@ with tab4:
                                     line=dict(color="#8e44ad", width=1), name="Residuals"), row=1, col=1)
         fig4b.add_hline(y=0, line_dash="dash", line_color="gray", row=1, col=1)
 
-        resid_acf = acf(resid.dropna(), nlags=min(30, len(resid)//2 - 1), fft=True)
-        ci_r = 1.96 / np.sqrt(len(resid.dropna()))
+        resid_clean = pd.Series(resid).dropna().values
+        resid_acf = acf(resid_clean, nlags=min(30, len(resid_clean)//2 - 1), fft=True)
+        ci_r = 1.96 / np.sqrt(len(resid_clean))
         fig4b.add_trace(go.Bar(x=np.arange(len(resid_acf)), y=resid_acf,
                                 marker_color="#8e44ad", opacity=0.7, name="Resid ACF"), row=1, col=2)
         fig4b.add_hline(y=ci_r,  line_dash="dash", line_color="red", line_width=1, row=1, col=2)
