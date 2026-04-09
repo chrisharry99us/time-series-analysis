@@ -471,17 +471,21 @@ with tab5:
     if fit_ok:
         alpha = 1 - ci_level / 100
         fcast = res.get_forecast(steps=forecast_h)
-        fcast_mean = fcast.predicted_mean
+        fcast_mean = np.array(fcast.predicted_mean).flatten()
         fcast_ci   = fcast.conf_int(alpha=alpha)
+        # conf_int may return DataFrame or ndarray depending on statsmodels version
+        ci_arr = np.array(fcast_ci)
+        ci_lower_raw = ci_arr[:, 0]
+        ci_upper_raw = ci_arr[:, 1]
 
         if ds["log"]:
             fcast_vals  = np.exp(fcast_mean)
-            fcast_lower = np.exp(fcast_ci.iloc[:, 0])
-            fcast_upper = np.exp(fcast_ci.iloc[:, 1])
+            fcast_lower = np.exp(ci_lower_raw)
+            fcast_upper = np.exp(ci_upper_raw)
         else:
             fcast_vals  = fcast_mean
-            fcast_lower = fcast_ci.iloc[:, 0]
-            fcast_upper = fcast_ci.iloc[:, 1]
+            fcast_lower = ci_lower_raw
+            fcast_upper = ci_upper_raw
 
         n_hist = len(y_raw)
         hist_x = list(range(n_hist))
@@ -520,9 +524,9 @@ with tab5:
         st.markdown("#### Forecast Values")
         fcast_df = pd.DataFrame({
             "Period": [f"t+{i+1}" for i in range(forecast_h)],
-            "Forecast": fcast_vals.values.round(2),
-            f"Lower {ci_level}%": fcast_lower.values.round(2),
-            f"Upper {ci_level}%": fcast_upper.values.round(2),
+            "Forecast": np.round(fcast_vals, 2),
+            f"Lower {ci_level}%": np.round(fcast_lower, 2),
+            f"Upper {ci_level}%": np.round(fcast_upper, 2),
         })
         st.dataframe(fcast_df, use_container_width=True, hide_index=True)
 
