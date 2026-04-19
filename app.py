@@ -505,6 +505,90 @@ with tab3:
         difficult to interpret. This is why <strong>auto.arima</strong> (AICc comparison across
         23 candidates) was used, selecting <strong>SARIMA(2,0,3)(1,1,0)[4]</strong>.
         </div>""", unsafe_allow_html=True)
+
+        st.markdown("""
+        <div class='card'>
+        <div class='section-label'>What is a SARIMA Model — and Where Did Those Numbers Come From?</div>
+
+        <p><strong>SARIMA</strong> stands for <strong>Seasonal AutoRegressive Integrated Moving Average</strong>.
+        That's a mouthful, but each word just describes one ingredient the model uses to capture a
+        different pattern in the data. It's written as two sets of brackets:</p>
+
+        <p style="text-align:center; font-size:1.2rem; font-weight:600; letter-spacing:0.05em;">
+        SARIMA &nbsp;(<em>p</em>, <em>d</em>, <em>q</em>) &nbsp;×&nbsp; (<em>P</em>, <em>D</em>, <em>Q</em>)[<em>s</em>]
+        </p>
+
+        <p>The first bracket handles <strong>short-term patterns</strong> (quarter to quarter).
+        The second bracket handles <strong>seasonal patterns</strong> (year to year).
+        The <em>s</em> tells the model how long one season is — for quarterly data that's <strong>4</strong>.</p>
+
+        <p>Our model is <strong>SARIMA(2,0,3)(1,1,0)[4]</strong>. Here is what each number means:</p>
+
+        <table style="width:100%; border-collapse:collapse; margin:1rem 0;">
+          <thead>
+            <tr style="background:#f5f0e8; text-align:left;">
+              <th style="padding:0.5rem 0.75rem; border:1px solid #ddd;">Letter</th>
+              <th style="padding:0.5rem 0.75rem; border:1px solid #ddd;">Full Name</th>
+              <th style="padding:0.5rem 0.75rem; border:1px solid #ddd;">Value</th>
+              <th style="padding:0.5rem 0.75rem; border:1px solid #ddd;">Plain-English Meaning</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;"><strong>p = 2</strong></td>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;">AutoRegressive order</td>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;">2</td>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;">The model looks back at the <strong>last 2 quarters</strong> to predict this quarter. If gas consumption was high last quarter and the one before, that carries some weight in predicting today.</td>
+            </tr>
+            <tr style="background:#fafafa;">
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;"><strong>d = 0</strong></td>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;">Integrated (differencing) order</td>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;">0</td>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;"><strong>No non-seasonal differencing needed.</strong> We already removed the trend by taking the log. The series was already stable enough without subtracting consecutive values from each other.</td>
+            </tr>
+            <tr>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;"><strong>q = 3</strong></td>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;">Moving Average order</td>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;">3</td>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;">The model also learns from its own <strong>past 3 forecast errors</strong>. If it over-predicted last quarter, it adjusts downward. Think of it as the model correcting its own recent mistakes.</td>
+            </tr>
+            <tr style="background:#fafafa;">
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;"><strong>P = 1</strong></td>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;">Seasonal AR order</td>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;">1</td>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;">The model looks back <strong>1 full year</strong> (4 quarters ago) to help predict this quarter. If last winter was particularly cold and consumption was high, that influences this winter's forecast.</td>
+            </tr>
+            <tr>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;"><strong>D = 1</strong></td>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;">Seasonal differencing order</td>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;">1</td>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;">This is the <strong>seasonal differencing step we applied in Tab 2</strong> — subtracting each quarter's value from the same quarter a year ago. The model itself is told this was done once (D=1) so it can reverse it when producing forecasts.</td>
+            </tr>
+            <tr style="background:#fafafa;">
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;"><strong>Q = 0</strong></td>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;">Seasonal MA order</td>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;">0</td>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;"><strong>No seasonal moving-average term needed.</strong> The model doesn't need to correct based on year-old forecast errors — the AR and MA terms already handle the remaining structure well enough.</td>
+            </tr>
+            <tr>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;"><strong>s = 4</strong></td>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;">Season length</td>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;">4</td>
+              <td style="padding:0.5rem 0.75rem; border:1px solid #ddd;">There are <strong>4 quarters in a year</strong>, so one full seasonal cycle = 4 time steps. This tells the model how far back to look for the seasonal component.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><strong>How were these values chosen?</strong> Rather than picking them by hand from the ACF/PACF plots
+        (which in this case were ambiguous — no clean cutoff), we used <strong>auto.arima</strong> from R's
+        <em>forecast</em> package. It systematically fits 23 different combinations of (p, d, q)(P, D, Q)
+        and scores each one using <strong>AICc</strong> (Akaike Information Criterion, corrected for small
+        samples). AICc penalises models that are overly complex — so it naturally favours a model that
+        forecasts accurately <em>without</em> using unnecessary parameters.
+        SARIMA(2,0,3)(1,1,0)[4] was the combination with the lowest AICc score, meaning it gave the
+        best balance of accuracy and simplicity across all candidates tested.</p>
+        </div>""", unsafe_allow_html=True)
+
     else:
         st.markdown("""<div class='result-box'>
         <strong>Reading the plots:</strong> PACF shows significant spikes at lags 1 and 2
