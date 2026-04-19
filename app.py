@@ -426,6 +426,45 @@ with tab2:
     {verdict} {"(reject H₀ of unit root)" if adf_p < 0.05 else "(fail to reject H₀)"}
     </div>""", unsafe_allow_html=True)
 
+    st.markdown("""
+    <div class='card'>
+    <div class='section-label'>What Did We Just Do — and Why?</div>
+
+    <p>When we first looked at the raw data, two things were making the series hard to model:</p>
+
+    <p><strong>Problem 1 — Growing swings (heteroscedasticity).</strong>
+    The peaks and troughs in the 1960s were small. By the 1980s they were enormous.
+    A model trained on those early small swings would be constantly surprised by the later big ones.
+    The <strong>log transformation</strong> (green chart) compresses the scale so that a 10 % swing
+    looks the same size whether it happens in 1960 or 1990. After taking the log, the seasonal
+    swings are roughly the same height throughout the whole series — the variance is now stable.</p>
+
+    <p><strong>Problem 2 — Seasonality (non-stationarity).</strong>
+    Gas consumption is higher every winter and lower every summer, year after year.
+    A model can't generalise from one quarter to the next if Q1 is always far above Q3 by
+    construction. <strong>Seasonal differencing</strong> (red chart) fixes this by subtracting
+    each quarter's value from the same quarter one year earlier — so instead of modelling
+    "Q1 consumption", we model "how much did Q1 change compared with last year's Q1?"
+    The result fluctuates randomly around zero with no repeating seasonal pattern.</p>
+
+    <p><strong>The Augmented Dickey-Fuller test — a stationarity check.</strong>
+    Once we've transformed the data we need to <em>prove</em> it is stationary, not just eyeball it.
+    The ADF test is a formal statistical test with one question: <em>"Does this series have a unit
+    root?"</em> A unit root is a sign that the series is drifting or trending — i.e. not stationary.
+    Think of it like testing whether a drunk person is walking randomly (stationary) or
+    gradually wandering further and further from the lamppost (non-stationary). The test produces
+    a p-value: if p &lt; 0.05 we reject the idea of a unit root and conclude the series is
+    stationary.</p>
+
+    <p><strong>What our result tells us.</strong>
+    Our ADF statistic came out at <strong>−8.07</strong> with a p-value of <strong>0.0000</strong>.
+    That's an extremely strong rejection of the unit-root hypothesis — the series is
+    unambiguously stationary. The transformed series is now ready to be handed to a SARIMA model,
+    which assumes stationarity as a prerequisite. Without these two transformation steps
+    the model would produce unreliable forecasts; with them, we've given it a stable, well-behaved
+    signal to learn from.</p>
+    </div>""", unsafe_allow_html=True)
+
 # ─────────────────────────────────────────────────────────────────────────────
 # TAB 3 — ACF / PACF
 # ─────────────────────────────────────────────────────────────────────────────
