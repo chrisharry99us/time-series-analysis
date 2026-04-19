@@ -343,6 +343,33 @@ with tab1:
         The seasonal swings <em>grow</em> over time (variance increases with the level)
         → a <strong>log transformation</strong> is needed before differencing.
         </div>""", unsafe_allow_html=True)
+        st.markdown("""
+        <div class='card'>
+        <div class='section-label'>Why a Log Transformation?</div>
+        <p>Look at the chart above. In the 1960s the gap between a winter peak and a summer trough
+        is roughly <strong>80 MMTherms</strong>. By the 1980s that same gap has grown to over
+        <strong>300 MMTherms</strong>. The swings are getting proportionally bigger as the overall
+        level rises — this is called <em>multiplicative seasonality</em>, and it is a problem.</p>
+
+        <p>ARIMA models assume the data has <strong>constant variance</strong> — that the ups and downs
+        stay roughly the same size throughout the series. When variance grows over time, the model
+        gets confused: it sees big swings in recent data and small swings in old data and cannot
+        find a single consistent pattern to learn from. It will systematically under-fit the early
+        period and over-fit the recent period.</p>
+
+        <p><strong>What the log transformation does:</strong> applying log( ) compresses large values
+        more than small ones. A value of 500 becomes 6.2; a value of 100 becomes 4.6 — a ratio of
+        5:1 in the original scale becomes a difference of just 1.6 on the log scale.
+        This compression turns those growing proportional swings into roughly equal-sized swings
+        across the entire series. The model now sees a consistent pattern from 1960 to 1986
+        and can learn from all of it equally.</p>
+
+        <p style='margin-bottom:0'><strong>In plain English:</strong> the log transformation is like
+        switching from measuring distances in miles to measuring them in "percentage of the total journey".
+        A 50-mile detour early in a 60-mile trip feels enormous; the same 50-mile detour on a
+        3,000-mile road trip barely registers. The log scale captures that proportional sense of
+        "how big is this swing relative to where we are" — which is exactly what the model needs.</p>
+        </div>""", unsafe_allow_html=True)
     else:
         st.markdown("""
         <div class='result-box'>
