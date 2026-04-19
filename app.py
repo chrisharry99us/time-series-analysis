@@ -211,36 +211,93 @@ st.markdown("<br>", unsafe_allow_html=True)
 # ── Context ────────────────────────────────────────────────────────────────────
 col_ctx, col_ctrl = st.columns([3, 2], gap="large")
 with col_ctx:
-    st.markdown("<div class='section-label'>About This Project</div>", unsafe_allow_html=True)
-    ukgas_text = """
-    <p>This app walks through the complete ARIMA/SARIMA modelling workflow applied to two classic
-    time series datasets. The goal is to build a model that understands the past behaviour of
-    the series well enough to <strong>forecast future values</strong> with meaningful uncertainty bands.</p>
-    <p>The workflow follows five steps: <strong>plot the raw data → transform to stabilise variance →
-    difference to achieve stationarity → identify model order via ACF/PACF →
-    fit and evaluate the model → forecast.</strong></p>
-    <p>Use the sidebar to switch datasets, adjust the forecast horizon, or manually tune the model
-    order (p, d, q) and watch the fitted values and forecasts update in real time.</p>
-    """
-    st.markdown(f"<div class='card'>{ukgas_text}</div>", unsafe_allow_html=True)
-with col_ctrl:
-    st.markdown("<div class='section-label'>How the Controls Work</div>", unsafe_allow_html=True)
     st.markdown("""
     <div class='card'>
-    <p><strong>📂 Dataset</strong><br>Switch between UK Gas (quarterly, seasonal) and
-    US Chicken Prices (monthly, trend-only). All charts and models update automatically.</p>
-    <p><strong>📅 Forecast Horizon</strong><br>How many periods ahead to forecast.
-    For UK Gas that's quarters; for Chicken that's months. Watch the prediction intervals
-    widen as you push further into the future.</p>
-    <p><strong>🎛️ Confidence Interval</strong><br>Width of the shaded forecast band — 80%, 90%, or 95%.</p>
-    <p><strong>p / d / q — AR, I, MA orders</strong><br>
-    <em>p</em> = how many past values the model uses.<br>
-    <em>d</em> = how many times the series is differenced.<br>
-    <em>q</em> = how many past forecast errors the model uses.</p>
-    <p style='margin-bottom:0'><strong>P / D / Q — Seasonal orders</strong><br>
-    Same as p/d/q but applied at the seasonal lag (quarterly = lag 4, monthly = lag 12).</p>
+      <div class='section-label'>About This Project</div>
+      <p>This app walks through the complete ARIMA/SARIMA modelling workflow applied to two classic
+      time series datasets. The goal is to build a model that understands the past behaviour of
+      the series well enough to <strong>forecast future values</strong> with meaningful uncertainty bands.</p>
+      <p>The workflow follows five steps: <strong>plot the raw data → transform to stabilise variance →
+      difference to achieve stationarity → identify model order via ACF/PACF →
+      fit and evaluate the model → forecast.</strong></p>
+      <p style='margin-bottom:0'>Use the sidebar to switch datasets, adjust the forecast horizon, or manually tune the model
+      order (p, d, q) and watch the fitted values and forecasts update in real time.</p>
     </div>
     """, unsafe_allow_html=True)
+with col_ctrl:
+    st.markdown("""
+    <div class='card'>
+      <div class='section-label'>How the Controls Work</div>
+      <p><strong>📂 Dataset</strong><br>Switch between UK Gas (quarterly, seasonal) and
+      US Chicken Prices (monthly, trend-only). All charts and models update automatically.</p>
+      <p><strong>📅 Forecast Horizon</strong><br>How many periods ahead to forecast.
+      For UK Gas that's quarters; for Chicken that's months. Watch the prediction intervals
+      widen as you push further into the future.</p>
+      <p><strong>🎛️ Confidence Interval</strong><br>Width of the shaded forecast band — 80%, 90%, or 95%.</p>
+      <p><strong>p / d / q — AR, I, MA orders</strong><br>
+      <em>p</em> = how many past values the model uses.<br>
+      <em>d</em> = how many times the series is differenced.<br>
+      <em>q</em> = how many past forecast errors the model uses.</p>
+      <p style='margin-bottom:0'><strong>P / D / Q — Seasonal orders</strong><br>
+      Same as p/d/q but applied at the seasonal lag (quarterly = lag 4, monthly = lag 12).</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+# ── Plain-English Explainer ────────────────────────────────────────────────────
+st.markdown("""
+<div class='card'>
+  <div class='section-label'>What is Time Series? — A Plain-English Guide</div>
+  <p>A <strong>time series</strong> is simply any data that is recorded in order over time —
+  gas consumption each quarter, stock prices each day, or rainfall each month.
+  The goal of time series analysis is to understand the patterns in that data well enough
+  to <strong>predict what comes next</strong>. Think of it like studying someone's commute
+  times over six months so you can reliably tell them how long tomorrow's drive will take.</p>
+
+  <p>We follow a five-step workflow to do this properly:</p>
+
+  <p><strong>Step 1 — Look at the raw data</strong><br>
+  Before anything else, we simply plot the data and study it.
+  Is it trending upward over time? Does it spike at regular intervals — like gas usage peaking
+  every winter? Spotting these patterns first tells us what kind of model we'll need.
+  You wouldn't build a house without looking at the land first.</p>
+
+  <p><strong>Step 2 — Stabilise the variance (transform)</strong><br>
+  Sometimes a series doesn't just grow — its swings get bigger too.
+  UK gas consumption in the 1980s didn't just use more gas than the 1960s,
+  the difference between winter and summer peaks also grew.
+  We apply a <em>log transformation</em> to compress those growing swings
+  so they're roughly the same size throughout — making it much easier for the model to learn
+  a consistent pattern. Think of it like adjusting the volume on a speaker that keeps getting louder.</p>
+
+  <p><strong>Step 3 — Remove trends and seasonality (differencing)</strong><br>
+  Our models work best when the data fluctuates around a flat, stable average rather than
+  drifting upward or downward. <em>Differencing</em> converts the data from raw levels
+  into changes — instead of "gas was 400, then 450, then 510", we work with "gas went up 50,
+  then up 60". This flattens the trend so the model can focus purely on the repeating patterns.
+  Seasonal differencing does the same thing but compares each quarter to the same quarter
+  a year earlier, removing the annual cycle.</p>
+
+  <p><strong>Step 4 — Choose how far back to look (ACF / PACF)</strong><br>
+  Now we need to decide how many past values the model should use when making a prediction.
+  Should it look back one period? Four? Twelve?
+  The <em>ACF</em> and <em>PACF</em> charts are diagnostic tools that show how strongly
+  each past value is related to the current one. Sharp cutoffs in these charts tell us
+  exactly which lags matter — like working out that today's commute time is mainly
+  predicted by yesterday's, not last week's.</p>
+
+  <p><strong>Step 5 — Fit the model, check the residuals, and forecast</strong><br>
+  With the structure decided, we train the model on the historical data.
+  A well-fitted model leaves behind <em>residuals</em> (errors) that look like pure random noise
+  — no patterns left unexplained. We check this with diagnostic plots before trusting the forecasts.
+  Finally, the model projects values into the future.
+  The shaded band around the forecast line is the <em>prediction interval</em> —
+  it shows the range of plausible future values.
+  That band widens the further ahead we forecast because uncertainty naturally compounds over time,
+  the same way a weather forecast is far less reliable for next month than for tomorrow.</p>
+</div>
+""", unsafe_allow_html=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
