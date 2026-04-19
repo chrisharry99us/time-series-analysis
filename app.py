@@ -25,27 +25,31 @@ st.markdown("""
   [data-testid="stSidebar"] [data-baseweb="select"] * { color: #0d1b2a !important; }
   [data-testid="stSidebar"] [data-baseweb="select"] div[class*="ValueContainer"] { background: #f0f2f6 !important; border-radius: 6px; }
   [data-testid="stSidebar"] [data-baseweb="select"] span { color: #0d1b2a !important; }
+  body, p, li, div { font-size: 1.05rem !important; line-height: 1.7; }
   .hero { background: #0d1b2a; color: white; padding: 2.5rem 2rem 2rem;
           border-radius: 12px; margin-bottom: 1.5rem; }
-  .hero-eye { color: #f0b429; font-size: 0.8rem; font-weight: 700;
+  .hero-eye { color: #f0b429; font-size: 0.95rem; font-weight: 700;
               letter-spacing: 3px; text-transform: uppercase; }
-  .hero-title { font-size: 2rem; font-weight: 800; margin: 0.4rem 0 0.6rem; }
-  .hero-sub { color: #9da8b7; font-size: 1rem; }
+  .hero-title { font-size: 2.2rem; font-weight: 800; margin: 0.4rem 0 0.6rem; }
+  .hero-sub { color: #9da8b7; font-size: 1.1rem; }
   .metric-card { background: white; border-radius: 10px; padding: 1.2rem 1.5rem;
                  box-shadow: 0 1px 4px rgba(0,0,0,.08); text-align: center; }
   .metric-value { font-size: 2rem; font-weight: 800; color: #0d1b2a; }
-  .metric-label { font-size: 0.78rem; color: #6b7a90; text-transform: uppercase;
+  .metric-label { font-size: 0.9rem; color: #6b7a90; text-transform: uppercase;
                   letter-spacing: 1px; margin-top: 0.2rem; }
-  .section-label { font-size: 0.72rem; font-weight: 700; color: #f0b429;
-                   letter-spacing: 3px; text-transform: uppercase; margin-bottom: 0.5rem; }
-  .card { background: white; border-radius: 10px; padding: 1.5rem;
-          box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 1rem; }
+  .section-label { font-size: 0.85rem; font-weight: 700; color: #f0b429;
+                   letter-spacing: 3px; text-transform: uppercase; margin-bottom: 0.75rem; }
+  .card { background: white; border-radius: 10px; padding: 1.8rem;
+          box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 1rem; font-size: 1.05rem; }
+  .card p { margin-bottom: 1rem; }
   .result-box { background: #f0f7ff; border-left: 4px solid #1e6fcf;
-                border-radius: 0 8px 8px 0; padding: 1rem 1.2rem; margin-bottom: 0.8rem; }
+                border-radius: 0 8px 8px 0; padding: 1.1rem 1.4rem; margin-bottom: 0.8rem;
+                font-size: 1.05rem !important; }
   .warn-box   { background: #fffbf0; border-left: 4px solid #f0b429;
-                border-radius: 0 8px 8px 0; padding: 1rem 1.2rem; margin-bottom: 0.8rem; }
+                border-radius: 0 8px 8px 0; padding: 1.1rem 1.4rem; margin-bottom: 0.8rem;
+                font-size: 1.05rem !important; }
   .step-badge { display:inline-block; background:#0d1b2a; color:#f0b429;
-                font-size:0.7rem; font-weight:800; padding:2px 8px;
+                font-size:0.85rem; font-weight:800; padding:2px 10px;
                 border-radius:20px; letter-spacing:2px; margin-bottom:0.5rem; }
 </style>
 """, unsafe_allow_html=True)
@@ -208,43 +212,6 @@ for col, val, lbl in zip(
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# ── Context ────────────────────────────────────────────────────────────────────
-col_ctx, col_ctrl = st.columns([3, 2], gap="large")
-with col_ctx:
-    st.markdown("""
-    <div class='card'>
-      <div class='section-label'>About This Project</div>
-      <p>This app walks through the complete ARIMA/SARIMA modelling workflow applied to two classic
-      time series datasets. The goal is to build a model that understands the past behaviour of
-      the series well enough to <strong>forecast future values</strong> with meaningful uncertainty bands.</p>
-      <p>The workflow follows five steps: <strong>plot the raw data → transform to stabilise variance →
-      difference to achieve stationarity → identify model order via ACF/PACF →
-      fit and evaluate the model → forecast.</strong></p>
-      <p style='margin-bottom:0'>Use the sidebar to switch datasets, adjust the forecast horizon, or manually tune the model
-      order (p, d, q) and watch the fitted values and forecasts update in real time.</p>
-    </div>
-    """, unsafe_allow_html=True)
-with col_ctrl:
-    st.markdown("""
-    <div class='card'>
-      <div class='section-label'>How the Controls Work</div>
-      <p><strong>📂 Dataset</strong><br>Switch between UK Gas (quarterly, seasonal) and
-      US Chicken Prices (monthly, trend-only). All charts and models update automatically.</p>
-      <p><strong>📅 Forecast Horizon</strong><br>How many periods ahead to forecast.
-      For UK Gas that's quarters; for Chicken that's months. Watch the prediction intervals
-      widen as you push further into the future.</p>
-      <p><strong>🎛️ Confidence Interval</strong><br>Width of the shaded forecast band — 80%, 90%, or 95%.</p>
-      <p><strong>p / d / q — AR, I, MA orders</strong><br>
-      <em>p</em> = how many past values the model uses.<br>
-      <em>d</em> = how many times the series is differenced.<br>
-      <em>q</em> = how many past forecast errors the model uses.</p>
-      <p style='margin-bottom:0'><strong>P / D / Q — Seasonal orders</strong><br>
-      Same as p/d/q but applied at the seasonal lag (quarterly = lag 4, monthly = lag 12).</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-st.markdown("<br>", unsafe_allow_html=True)
-
 # ── Plain-English Explainer ────────────────────────────────────────────────────
 st.markdown("""
 <div class='card'>
@@ -298,6 +265,43 @@ st.markdown("""
   the same way a weather forecast is far less reliable for next month than for tomorrow.</p>
 </div>
 """, unsafe_allow_html=True)
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+# ── Context ────────────────────────────────────────────────────────────────────
+col_ctx, col_ctrl = st.columns([3, 2], gap="large")
+with col_ctx:
+    st.markdown("""
+    <div class='card'>
+      <div class='section-label'>About This Project</div>
+      <p>This app walks through the complete ARIMA/SARIMA modelling workflow applied to two classic
+      time series datasets. The goal is to build a model that understands the past behaviour of
+      the series well enough to <strong>forecast future values</strong> with meaningful uncertainty bands.</p>
+      <p>The workflow follows five steps: <strong>plot the raw data → transform to stabilise variance →
+      difference to achieve stationarity → identify model order via ACF/PACF →
+      fit and evaluate the model → forecast.</strong></p>
+      <p style='margin-bottom:0'>Use the sidebar to switch datasets, adjust the forecast horizon, or manually tune the model
+      order (p, d, q) and watch the fitted values and forecasts update in real time.</p>
+    </div>
+    """, unsafe_allow_html=True)
+with col_ctrl:
+    st.markdown("""
+    <div class='card'>
+      <div class='section-label'>How the Controls Work</div>
+      <p><strong>📂 Dataset</strong><br>Switch between UK Gas (quarterly, seasonal) and
+      US Chicken Prices (monthly, trend-only). All charts and models update automatically.</p>
+      <p><strong>📅 Forecast Horizon</strong><br>How many periods ahead to forecast.
+      For UK Gas that's quarters; for Chicken that's months. Watch the prediction intervals
+      widen as you push further into the future.</p>
+      <p><strong>🎛️ Confidence Interval</strong><br>Width of the shaded forecast band — 80%, 90%, or 95%.</p>
+      <p><strong>p / d / q — AR, I, MA orders</strong><br>
+      <em>p</em> = how many past values the model uses.<br>
+      <em>d</em> = how many times the series is differenced.<br>
+      <em>q</em> = how many past forecast errors the model uses.</p>
+      <p style='margin-bottom:0'><strong>P / D / Q — Seasonal orders</strong><br>
+      Same as p/d/q but applied at the seasonal lag (quarterly = lag 4, monthly = lag 12).</p>
+    </div>
+    """, unsafe_allow_html=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
